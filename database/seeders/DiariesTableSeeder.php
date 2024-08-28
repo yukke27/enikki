@@ -19,7 +19,7 @@ class DiariesTableSeeder extends Seeder
                 'color_id' => 1,
                 'title' => 'title',
                 'body' => 'this is body',
-                'image_path' => 'images/test.jpg',
+                'image_url' => 'images/test.jpg',
                 'created_at' => now(),
                 'updated_at' => now(),
                 'deleted_at' => null,

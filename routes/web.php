@@ -24,6 +24,8 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/diaries', [DiaryController::class, 'index'])->name('index')->middleware('auth');
+Route::get('/diaries/create', [DiaryController::class, 'create'])->name('create')->middleware('auth');
+Route::post('/diaries', [DiaryController::class, 'store'])->name('store')->middleware('auth');
 Route::get('/diaries/show', [DiaryController::class, 'show'])->name('show')->middleware('auth');
 
 Route::middleware('auth')->group(function () {

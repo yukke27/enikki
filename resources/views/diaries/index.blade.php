@@ -4,8 +4,9 @@
     </x-slot>
     <body>
         <h1>Enikki.</h1>
-        <div class='diaries'>
+        <div class="calendar">
             <p>ここにカレンダーが表示される</p>
         </div>
-        <p class='user'>ログインユーザー：{{ Auth::user()->name }}</p>
+        <a href="/diaries/create">日記を作成</a>
+        <p class="user">ログインユーザー：{{ Auth::user()->name }}</p>
 </x-app-layout>

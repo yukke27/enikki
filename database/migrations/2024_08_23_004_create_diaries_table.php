@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('title');
             //string型だと255文字までだが、短い文章を想定しているため問題ないと考える
             $table->string('body');
-            $table->string('image_path');
+            $table->string('image_url');
             $table->timestamps(); //created_atとupdated_atカラムを自動的に追加
             $table->softDeletes(); //deleted_atカラムを追加
         });

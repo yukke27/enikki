@@ -3,7 +3,7 @@
         Show
     </x-slot>
     <body>
-        <div class="diaries">
+        <div class="diary">
             <p>{{ $diary->created_at->format("Y-m-d") }}</p>
             <img src="{{ asset($diary->weather->icon_path) }}">
             <p>{{ $diary->title }}</p>

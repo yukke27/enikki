@@ -2,23 +2,25 @@
     <body>
         <!-- /diariesにPOSTメソッドでデータが送信される -->
         <!-- enctype属性はファイルを送信する際のデータ形式を決める -->
-        <form action="/diaries" method="POST" enctype="multipart/form-data">
+        <form action="/diaries/{{ $diary->id }}" method="POST" enctype="multipart/form-data">
             @csrf
+            @method("PUT")
             <div class="weather">
                 @foreach($weathers as $weather)
                     <label for="weather-{{ $weather->id }}">{{ $weather->name }}</label>
-                    <input type="radio" name="diary[weather_id]" id="weather-{{ $weather->id }}" value="{{ $weather->id }}">
+                    <input type="radio" name="diary[weather_id]" id="weather-{{ $weather->id }}" value="{{ $weather->id }}"
+                        {{ $diary->weather_id == $weather->id ? "checked" : "" }}>
                     <br>
                 @endforeach
             </div>
             <div class="title">
                 <p>タイトル</p>
                 <!-- name属性はサーバー側で扱うときのキーになる -->
-                <input type="text" name="diary[title]" placeholder="タイトルを入力"/>
+                <input type="text" name="diary[title]" value="{{ $diary->title }}"/>
             </div>
             <div class="body">
                 <p>本文</p>
-                <textarea name="diary[body]" placeholder="本文を入力"></textarea>
+                <textarea name="diary[body]">{{ $diary->body}}</textarea>
             </div>
             <div class="image">
                 <!-- type属性にfileを指定することでファイルがアップロードできるようになる -->
@@ -29,7 +31,12 @@
             <div class="tags">
                 @foreach($tags as $tag)
                     <label for="tag-{{ $tag->id }}">{{ $tag->name }}</label>
-                    <input type="checkbox" name="existing_tag_ids[]" id="tag-{{ $tag->id }}" value="{{ $tag->id }}">
+                    <!-- 
+                        ループ内で処理されているタグが編集対象の日記に関連付けられているタグIDの配列に
+                        含まれているかチェックし、関連付けられている場合checkd属性が追加される（三項演算子）
+                    -->
+                    <input type="checkbox" name="existing_tag_ids[]" id="tag-{{ $tag->id }}" value="{{ $tag->id }}"
+                        {{ in_array($tag->id, $relatedTagIds) ? 'checked' : '' }}>
                     <br>
                 @endforeach
                 <button type="button" id="add-new-tag">＋</button>

@@ -1,9 +1,7 @@
 <x-app-layout>
-    <x-slot name="header">
-        Show
-    </x-slot>
     <body>
-        <div class="diary">
+        <div class="diaries">
+            @foreach ($diaries as $diary)
             <p>{{ $diary->created_at->format("Y-m-d") }}</p>
             <img src="{{ asset($diary->weather->icon_path) }}">
             <p>{{ $diary->title }}</p>
@@ -14,6 +12,7 @@
                 @endforeach
             </p>
             <img src="{{ $diary->image_url }}">
+            <a href="/diaries/{{ $diary->id }}/edit">編集</a>
+            @endforeach
         </div>
-    </body>
 </x-app-layout>

@@ -1,8 +1,19 @@
-<x-app-layout>
+<!DOCTYPE HTML>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Gallery</title>
+        <!-- Fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
+    </head>
     <body>
+        <p>年月日選択ボタン</p>
+        <p>作成・ホーム・メニューボタンの追加</p>
+        <p>ロゴの追加</p>
         <div class="diary">
             @foreach ($diaries as $diary)
-            <p>{{ $diary->created_at->format("Y-m-d") }}</p>
+            <p>{{ $diary->date }}</p>
             <img src="{{ asset($diary->weather->icon_path) }}">
             <p>{{ $diary->title }}</p>
             <p>{{ $diary->body }}</p>
@@ -11,7 +22,7 @@
                     {{ $tag->name }}@if(!$loop->last)/@endif
                 @endforeach
             </p>
-            <img src="{{ $diary->image_url }}">
+            <img src="{{ $diary->image_url }}" style="width: 500px;"><br>
             <label for="favorite-{{ $diary->id }}">お気に入り</label>
             <input type="checkbox" name="favorites[]" id="favorite-{{ $diary->id }}" value="{{ $diary->id }}"
             {{ in_array($diary->id, $favorites) ? "checked" : "" }}><br>
@@ -70,4 +81,4 @@
         </script>
         
     </body>
-</x-app-layout>
+</html>

@@ -11,6 +11,7 @@ class Diary extends Model
     
     protected $fillable = [
             'user_id',
+            'date',
             'weather_id',
             'color_id',
             'title',

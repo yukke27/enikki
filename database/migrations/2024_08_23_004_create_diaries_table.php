@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('weather_id')->constrained('weathers');
             $table->foreignId('color_id')->constrained();
+            $table->date('date');
             $table->string('title');
             //string型だと255文字までだが、短い文章を想定しているため問題ないと考える
             $table->string('body');

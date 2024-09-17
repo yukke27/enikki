@@ -17,11 +17,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/dashboard', function () {
+Route::get('/', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/', [DiaryController::class, 'index'])->name('index')->middleware('auth');
+Route::get('/index', [DiaryController::class, 'index'])->name('index')->middleware('auth');
+Route::get('/diaries/updateCalendar', [DiaryController::class, 'updateCalendar'])->middleware('auth');
 Route::get('/diaries/create', [DiaryController::class, 'create'])->name('create')->middleware('auth');
 Route::post('/diaries', [DiaryController::class, 'store'])->name('store')->middleware('auth');
 Route::get('/diaries/{diary}/edit', [DiaryController::class, 'edit'])->name('edit')->middleware('auth');

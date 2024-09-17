@@ -8,22 +8,33 @@ use App\Models\Tag;
 use App\Models\Favorite;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreDiaryRequest;
+use App\Http\Requests\UpdateDiaryRequest;
 use Cloudinary;
+use Carbon\Carbon;
 
 class DiaryController extends Controller
 {
     public function index(Diary $diary)
     {
         $tags = Tag::all();
+        $selectedYear = date('Y');
+        $selectedMonth = date('n');
+        
         return view('diaries.index')->with([
+            'selectedYear' => $selectedYear,
+            'selectedMonth' => $selectedMonth,
             'diaries' => $diary->get(),
             'tags' => $tags,
         ]);
     }
     
-    public function show(Diary $diary)
+    public function updateCalendar(Request $request)
     {
-        return view('diaries.show')->with(['diary' => $diary]);
+        $selectedYear = $request['year'];
+        $selectedMonth = $request['month'];
+        
+        return response()->json(['html' => view('partials.calendar', compact('selectedYear', 'selectedMonth'))->render()]);
     }
     
     public function create()
@@ -31,13 +42,32 @@ class DiaryController extends Controller
         $weathers = Weather::all();//天気をすべて取得
         $tags = Tag::all();//タグをすべて取得
         
-        return view('diaries.create')->with(['weathers' => $weathers, 'tags' => $tags]);
+        //現在の年月日を取得
+        $currentYear = date('Y');
+        $currentMonth = date('m');
+        $currentDate = date('d');
+        //月の最終日を取得
+        $daysInMonth = date('t');
+        
+        return view('diaries.create')->with([
+            'weathers' => $weathers,
+            'tags' => $tags,
+            'currentYear' => $currentYear,
+            'currentMonth' => $currentMonth,
+            'currentDate' => $currentDate,
+            'daysInMonth' => $daysInMonth,
+        ]);
     }
     
     public function edit(Diary $diary)
     {
         $weathers = Weather::all();//天気をすべて取得
         $tags = Tag::all();//タグをすべて取得
+        
+        //現在の年を取得
+        $currentYear = date('Y');
+        //編集対象の日記から年月日を取得
+        $date = Carbon::parse($diary->date);
         //日記に関連付けられたタグのIDを取得し配列に変換して$relatedTagIdsに格納
         $relatedTagIds = $diary->tags->pluck('id')->toArray();
         
@@ -45,20 +75,28 @@ class DiaryController extends Controller
             'diary' => $diary,
             'weathers' => $weathers,
             'tags' => $tags,
+            'currentYear' => $currentYear,
+            'selectedYear' => $date->year,
+            'selectedMonth' => $date->month,
+            'selectedDate' => $date->day,
+            'daysInMonth' => $date->endOfMonth()->day,
             'relatedTagIds' => $relatedTagIds,
         ]);
     }
     
-    public function store(Request $request, Diary $diary)
+    public function store(StoreDiaryRequest $request, Diary $diary)
     {
+        //dd($request->all());
         //リクエストからdiaryをキーに持つデータを取得し$diaryDataに代入
         $diaryData = $request['diary'];
+        //YYYY-mm-ddに変換
+        $date = $request['year'] . '-' . str_pad($request['month'], 2, '0', STR_PAD_LEFT) . '-' . str_pad($request['date'], 2, '0', STR_PAD_LEFT);
         //cloudinaryへ画像を送信し画像のURLを$image_urlに代入
         //fileメソッドはリクエストオブジェクトから送信されたファイルを取得するためのメソッド
         $imageUrl = Cloudinary::upload($request->file('image')->getRealPath())->getSecurePath();
         //userIdを取得
         $userId = auth()->id();
-        $diaryData += ['image_url' => $imageUrl, 'user_id' => $userId];
+        $diaryData += ['user_id' => $userId, 'date' => $date, 'image_url' => $imageUrl];
         
         //テスト用に仮のcolor_idを入れる
         $diaryData += ['color_id' => 1];
@@ -85,15 +123,20 @@ class DiaryController extends Controller
                 $diary->tags()->attach($newTagData->id);
             }
         }
-        return redirect('/diaries');
+        return redirect('/index');
     }
     
-    public function update(Request $request, Diary $diary)
+    public function update(UpdateDiaryRequest $request, Diary $diary)
     {
         $diaryData = $request['diary'];
-        $imageUrl = Cloudinary::upload($request->file('image')->getRealPath())->getSecurePath();
+        $date = $request['year'] . '-' . str_pad($request['month'], 2, '0', STR_PAD_LEFT) . '-' . str_pad($request['date'], 2, '0', STR_PAD_LEFT);
+        if ($request->hasFile('image')){
+            $imageUrl = Cloudinary::upload($request->file('image')->getRealPath())->getSecurePath();
+        } else {
+            $imageUrl = $diary->image_url;
+        }
         $userId = auth()->id();
-        $diaryData += ['image_url' => $imageUrl, 'user_id' => $userId];
+        $diaryData += ['user_id' => $userId, 'date' => $date, 'image_url' => $imageUrl];
         //テスト用に仮のcolor_idを入れる
         $diaryData += ['color_id' => 1];
         
@@ -114,7 +157,7 @@ class DiaryController extends Controller
                 $diary->tags()->attach($newTagData->id);
             }
         }
-        return redirect('/diaries');
+        return redirect('/index');
     }
     
     public function gallery()

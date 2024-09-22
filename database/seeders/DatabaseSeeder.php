@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
                 ColorsTableSeeder::class,
                 WeathersTableSeeder::class,
+                TemplatesTableSeeder::class,
             ]);
     }
 }

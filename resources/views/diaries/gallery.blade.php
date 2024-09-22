@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        @vite('resources/css/app.css')
         <title>Gallery</title>
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
@@ -13,20 +14,22 @@
         <p>ロゴの追加</p>
         <div class="diary">
             @foreach ($diaries as $diary)
-            <p>{{ $diary->date }}</p>
-            <img src="{{ asset($diary->weather->icon_path) }}">
-            <p>{{ $diary->title }}</p>
-            <p>{{ $diary->body }}</p>
-            <p>
-                @foreach ($diary->tags as $tag)
-                    {{ $tag->name }}@if(!$loop->last)/@endif
-                @endforeach
-            </p>
-            <img src="{{ $diary->image_url }}" style="width: 500px;"><br>
-            <label for="favorite-{{ $diary->id }}">お気に入り</label>
-            <input type="checkbox" name="favorites[]" id="favorite-{{ $diary->id }}" value="{{ $diary->id }}"
-            {{ in_array($diary->id, $favorites) ? "checked" : "" }}><br>
-            <a href="/diaries/{{ $diary->id }}/edit">編集</a>
+            <div class="flex flex-col m-16 shadow-xl">
+                <p>{{ $diary->date }}</p>
+                <img src="{{ asset($diary->weather->icon_path) }}" class="w-8">
+                <p>{{ $diary->title }}</p>
+                <p>{{ $diary->body }}</p>
+                <p>
+                    @foreach ($diary->tags as $tag)
+                        {{ $tag->name }}@if(!$loop->last)/@endif
+                    @endforeach
+                </p>
+                <img src="{{ $diary->image_url }}" style="width: 500px;"><br>
+                <label for="favorite-{{ $diary->id }}">お気に入り</label>
+                <input type="checkbox" name="favorites[]" id="favorite-{{ $diary->id }}" value="{{ $diary->id }}"
+                {{ in_array($diary->id, $favorites) ? "checked" : "" }}><br>
+                <a href="/diaries/{{ $diary->id }}/edit">編集</a>
+            </div>
             @endforeach
         </div>
         

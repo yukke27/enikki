@@ -15,19 +15,23 @@ class WeathersTableSeeder extends Seeder
     {
         DB::table('weathers')->insert([
                 'name' => 'sunny',
-                'icon_path' => 'images/weathers/sunny_24dp_000000_FILL0_wght100_GRAD-25_opsz24.png',
+                'icon_path' => 'images/weathers/sunny.svg',
+            ]);
+        DB::table('weathers')->insert([
+                'name' => 'partly_cloudy',
+                'icon_path' => 'images/weathers/partly_cloudy.svg',
             ]);
         DB::table('weathers')->insert([
                 'name' => 'cloudy',
-                'icon_path' => 'images/weathers/cloud_24dp_000000_FILL0_wght100_GRAD-25_opsz24.png',
+                'icon_path' => 'images/weathers/cloudy.svg',
             ]);
         DB::table('weathers')->insert([
                 'name' => 'rainy',
-                'icon_path' => 'images/weathers/rainy_24dp_000000_FILL0_wght100_GRAD-25_opsz24.png',
+                'icon_path' => 'images/weathers/rainy.svg',
             ]);
         DB::table('weathers')->insert([
                 'name' => 'snowy',
-                'icon_path' => 'images/weathers/weather_snowy_24dp_000000_FILL0_wght100_GRAD-25_opsz24.png',
+                'icon_path' => 'images/weathers/snowy.svg',
             ]);
     }
 }

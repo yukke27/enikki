@@ -14,7 +14,7 @@ class StoreDiaryRequest extends FormRequest
             'diary.weather_id' => 'required',
             'diary.title' => 'required|string|max:255',
             'diary.body' => 'required|string|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:255',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
         ];
     }
     

@@ -4,17 +4,12 @@ import forms from '@tailwindcss/forms';
 /** @type {import('tailwindcss').Config} */
 export default {
     content: [
-        "./resources/**/*.blade.php",
-        "./resources/**/*.js",
-        "./resources/**/*.vue",
+        "./resources/**/*.blade.php", // Bladeテンプレート
+        "./resources/**/*.js", // JavaScriptファイル
     ],
 
     theme: {
-        extend: {
-            fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
-            },
-        },
+        extend: {},
     },
 
     plugins: [forms],

@@ -14,6 +14,7 @@ class Diary extends Model
             'date',
             'weather_id',
             'color_id',
+            'template_id',
             'title',
             'body',
             'image_url',

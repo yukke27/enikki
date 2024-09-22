@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Diary;
 use App\Models\Weather;
+use App\Models\Template;
 use App\Models\Tag;
 use App\Models\Favorite;
 use Illuminate\Support\Facades\Auth;
@@ -40,6 +41,7 @@ class DiaryController extends Controller
     public function create()
     {
         $weathers = Weather::all();//天気をすべて取得
+        $templates = Template::all();
         $tags = Tag::all();//タグをすべて取得
         
         //現在の年月日を取得
@@ -51,6 +53,7 @@ class DiaryController extends Controller
         
         return view('diaries.create')->with([
             'weathers' => $weathers,
+            'templates' => $templates,
             'tags' => $tags,
             'currentYear' => $currentYear,
             'currentMonth' => $currentMonth,
@@ -62,6 +65,7 @@ class DiaryController extends Controller
     public function edit(Diary $diary)
     {
         $weathers = Weather::all();//天気をすべて取得
+        $templates = Template::all();
         $tags = Tag::all();//タグをすべて取得
         
         //現在の年を取得
@@ -74,6 +78,7 @@ class DiaryController extends Controller
         return view('diaries.edit')->with([
             'diary' => $diary,
             'weathers' => $weathers,
+            'templates' => $templates,
             'tags' => $tags,
             'currentYear' => $currentYear,
             'selectedYear' => $date->year,

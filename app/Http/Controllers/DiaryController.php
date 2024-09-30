@@ -22,10 +22,15 @@ class DiaryController extends Controller
         $selectedYear = date('Y');
         $selectedMonth = date('n');
         
+        $diaries = Diary::whereYear('date', $selectedYear)->whereMonth('date', $selectedMonth)->get();
+        $datesWithPosts = $diaries->map(function ($diary) {
+            return \Carbon\Carbon::parse($diary->date)->format('j');
+        })->toArray();
+        
         return view('diaries.index')->with([
             'selectedYear' => $selectedYear,
             'selectedMonth' => $selectedMonth,
-            'diaries' => $diary->get(),
+            'datesWithPosts' => $datesWithPosts,
             'tags' => $tags,
         ]);
     }
@@ -34,8 +39,15 @@ class DiaryController extends Controller
     {
         $selectedYear = $request['year'];
         $selectedMonth = $request['month'];
+        //選択された月の日記を取得
+        $diaries = Diary::whereYear('date', $selectedYear)->whereMonth('date', $selectedMonth)->get();
+        //日付を配列に変換
+        //mapメソッド：対象のコレクションに引数のコールバック処理を実行する
+        $datesWithPosts = $diaries->map(function ($diary) {
+            return \Carbon\Carbon::parse($diary->date)->format('j');
+        })->toArray();
         
-        return response()->json(['html' => view('partials.calendar', compact('selectedYear', 'selectedMonth'))->render()]);
+        return response()->json(['html' => view('partials.calendar', compact('selectedYear', 'selectedMonth', 'datesWithPosts'))->render()]);
     }
     
     public function create()
@@ -85,6 +97,7 @@ class DiaryController extends Controller
             'selectedMonth' => $date->month,
             'selectedDate' => $date->day,
             'daysInMonth' => $date->endOfMonth()->day,
+            'selectedWeather' => $diary->weather_id,
             'relatedTagIds' => $relatedTagIds,
         ]);
     }
@@ -170,7 +183,7 @@ class DiaryController extends Controller
         $userId = Auth::id();
         $favorites = Favorite::where('user_id', $userId)->pluck('diary_id')->toArray();
         
-        return view('diaries.gallery')->with(['diaries' => Diary::all(), 'favorites' => $favorites]);
+        return view('diaries.gallery')->with(['diaries' => Diary::orderBy('date', 'asc')->get(), 'favorites' => $favorites]);
     }
     
     

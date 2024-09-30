@@ -2,38 +2,42 @@
 <html lang="ja">
     <head>
         <meta charset="utf-8">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         @vite('resources/css/app.css')
         <title>Gallery</title>
         <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&family=Roboto+Mono:wght@100..700&display=swap" rel="stylesheet">
     </head>
-    <body>
-        <p>年月日選択ボタン</p>
-        <p>作成・ホーム・メニューボタンの追加</p>
-        <p>ロゴの追加</p>
-        <div class="diary">
-            @foreach ($diaries as $diary)
-            <div class="flex flex-col m-16 shadow-xl">
-                <p>{{ $diary->date }}</p>
-                <img src="{{ asset($diary->weather->icon_path) }}" class="w-8">
-                <p>{{ $diary->title }}</p>
-                <p>{{ $diary->body }}</p>
-                <p>
-                    @foreach ($diary->tags as $tag)
-                        {{ $tag->name }}@if(!$loop->last)/@endif
-                    @endforeach
-                </p>
-                <img src="{{ $diary->image_url }}" style="width: 500px;"><br>
-                <label for="favorite-{{ $diary->id }}">お気に入り</label>
-                <input type="checkbox" name="favorites[]" id="favorite-{{ $diary->id }}" value="{{ $diary->id }}"
-                {{ in_array($diary->id, $favorites) ? "checked" : "" }}><br>
-                <a href="/diaries/{{ $diary->id }}/edit">編集</a>
+    <body style="font-family: 'Roboto Mono', 'Noto Sans JP', sans-serif;">
+        <div class="flex m-20 justify-between items-center">
+            <a href="/index" class="flex w-64 h-auto">
+                <img src="/images/icons/logo.svg" alt="logo">
+            </a>
+            <div class="flex top-20 right-20 fixed space-x-4 z-10">
+                <a href="/diaries/create" class="w-12 h-12 rounded-full bg-white border border-black flex justify-center items-center">
+                    <img src="/images/icons/add.svg" alt="new diary" class="w-8 h-8 object-cover">
+                </a>
+                <a href="/index" class="w-12 h-12 rounded-full bg-white border border-black flex justify-center items-center">
+                    <img src="/images/icons/home.svg" alt="home" class="w-8 h-8 object-cover">
+                </a>
+                <a href="" class="w-12 h-12 rounded-full bg-white border border-black flex justify-center items-center">
+                    <img src="/images/icons/menu.svg" alt="menu" class="w-8 h-8 object-cover">
+                </a>
             </div>
+        </div>
+        <div class="diary flex flex-col items-center space-y-8">
+            @foreach ($diaries as $diary)
+                @if ($diary->template_id === 1)
+                    @include('partials.template1', ['diary' => $diary, 'cardSize' => 60, 'iconSize' => 2.5, 'margin' => 0])
+                @elseif ($diary->template_id === 2)
+                    @include('partials.template2', ['diary' => $diary, 'cardSize' => 60, 'iconSize' => 2.5, 'margin' => 0])
+                @endif
             @endforeach
         </div>
         
-        <meta name="csrf-token" content="{{ csrf_token() }}">
         <script>
             //ページが完全に読み込まれたときに実行される関数を定義
             document.addEventListener('DOMContentLoaded', function() {
@@ -80,6 +84,14 @@
                 .catch(error => {
                     console.error('Error:', error);
                 });
+                
+                const favoriteIcon = document.querySelector(`label[for="favorite-${diaryId}"] img`);
+                // isChecked が true の場合、画像を差し替える
+                if (isChecked) {
+                    favoriteIcon.src = '/images/icons/favorite-checked.svg'; // チェックされた状態の画像パス
+                } else {
+                    favoriteIcon.src = '/images/icons/favorite.svg'; // 未チェックの状態の画像パス
+                }
             }
         </script>
         

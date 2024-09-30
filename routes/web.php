@@ -17,9 +17,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//コードの順番上ではreturn view('diaies.index')が先に書かれているように見えるが、Laravelの動作の仕組みではルートが処理される前にミドルウェアが実行され
 Route::get('/', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+    if (auth()->check()) {
+        return redirect()->route('index');  // ログイン済みなら /index へ
+    }
+    return view('about');  // 未ログインなら about ビューを返す
+});
 
 Route::get('/index', [DiaryController::class, 'index'])->name('index')->middleware('auth');
 Route::get('/diaries/updateCalendar', [DiaryController::class, 'updateCalendar'])->middleware('auth');
@@ -28,6 +32,8 @@ Route::post('/diaries', [DiaryController::class, 'store'])->name('store')->middl
 Route::get('/diaries/{diary}/edit', [DiaryController::class, 'edit'])->name('edit')->middleware('auth');
 Route::put('/diaries/{diary}', [DiaryController::class, 'update'])->name('update')->middleware('auth');
 Route::get('/diaries/gallery', [DiaryController::class, 'gallery'])->name('gallery')->middleware('auth');
+
+Route::get('/about', function () {return view('about');} )->name('about');
 
 Route::post('/tags/search', [TagController::class, 'index'])->middleware('auth');
 

@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use App\Models\Diary;
 
 class UpdateDiaryRequest extends FormRequest
 {
@@ -12,7 +14,7 @@ class UpdateDiaryRequest extends FormRequest
             'diary.weather_id' => 'required',
             'diary.title' => 'required|string|max:255',
             'diary.body' => 'required|string|max:255',
-            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:255',
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg',
         ];
     }
     

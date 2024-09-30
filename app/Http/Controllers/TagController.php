@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Diary;
 use App\Models\Tag;
+use App\Models\Favorite;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class TagController extends Controller
@@ -43,13 +45,17 @@ class TagController extends Controller
         匿名関数の引数として渡している'$q'はクエリビルダーインスタンスというらしい
         クエリビルダーインスタンスが何なのか何故必要なのか調べておく
         */
+        $userId = Auth::id();
         $diaries = Diary::whereHas('tags', function($q) use ($tagIds) {
             $q->whereIn('tags.id', $tagIds); //日記に関連付けられたタグのIDが$tagIdsのいずれかと一致するか
-        }, '=', count($tagIds))->get();
+        }, '=', count($tagIds))->orderBy('date', 'asc')->get();
+        $tags = Tag::whereIn('id', $tagIds)->get();
+        $favorites = Favorite::where('user_id', $userId)->pluck('diary_id')->toArray();
         
         return view('tags.index')->with([
             'diaries' => $diaries,
-            'tags' => Tag::all(),
+            'favorites' => $favorites,
+            'tags' => $tags
         ]);
     }
 }

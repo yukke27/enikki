@@ -9,6 +9,17 @@ class Diary extends Model
 {
     use HasFactory;
     
+    protected $fillable = [
+            'user_id',
+            'date',
+            'weather_id',
+            'color_id',
+            'template_id',
+            'title',
+            'body',
+            'image_url',
+        ];
+    
     public function weather()
     {
         return $this->belongsTo(Weather::class);
